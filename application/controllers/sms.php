@@ -30,7 +30,7 @@
       } else if ($message['keyword'] == 'ADD') {
         $this->_report_people($message['content'], $sms);
       } else if ($message['keyword'] == 'FIND') {
-        $this->_search_people($message['content']);
+        $this->_search_people($message['content'], $sms);
       }
     }
 
@@ -74,10 +74,27 @@
         );
         $this->person->create_if_nonexistent($data);
       }
+      $this->sms->send($meta['source'], $this->RESPONSES['ADD']['SUCCESS']);
     }
 
-    private function _search_people($message) {
-      // 
+    private function _search_people($message, $meta) {
+      $queries = explode(',', $message);
+      $response = '';
+      foreach ($queries as $query) {
+        $people = $this->person->like(array('name' => trim($query)));
+        foreach ($people as $person) {
+          $statuses = $this->person->retrieve_statuses($person['id']);
+          $response .= "Name: " . $person['name'] 
+                    . "\nStatus: " . $statuses[0]['status'] 
+                    . "\nReported On: " . date('M d, Y', strtotime($statuses[0]['created_at']))
+                    . "\nReported By: " . $statuses[0]['reporter'] . "\n\n";
+        }
+      }
+      if ($response) {
+        $this->sms->send($meta['source'], trim($response));
+      } else {
+        $this->sms->send($meta['source'], $this->RESPONSES['FIND']['EMPTY_RESULTS']);
+      }
     }
 
   }
