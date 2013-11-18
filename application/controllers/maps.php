@@ -10,6 +10,10 @@
       $this->load->view('maps/index');
     }
 
+    public function search($query) {
+      
+    }
+
   }
 
 ?>
