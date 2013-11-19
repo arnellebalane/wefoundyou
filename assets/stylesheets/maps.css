@@ -11,9 +11,10 @@
   background-color: #ffffff;
   padding: 10px;
   box-shadow: 0px 1px 2px rgba(0, 0, 0, 0.25);
+  border-radius: 3px;
 }
 
-#search-box input[type="text"] {
+#search-box #search {
   width: 0;
   font: normal 1.5rem "Open Sans";
   color: #222222;
@@ -28,12 +29,12 @@
   -webkit-transition-timing-function: ease;
 }
 
-#search-box input[type="text"]:hover {
+#search-box #search:hover {
   background-color: #e5e5e5;
   cursor: pointer;
 }
 
-#search-box input[type="text"]:focus, #search-box input[type="text"].maximized {
+#search-box #search:focus, #search-box #search.maximized {
   width: 227px;
   background-position: 234px center;
   background-color: #e5e5e5;
@@ -43,4 +44,72 @@
 
 #search-box input[type="submit"] {
   display: none;
+}
+
+.info-window {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  background-color: #ffffff;
+  border-radius: 3px;
+  width: 220px;
+  padding-bottom: 3px;
+}
+
+.info-window h3 {
+  font: bold 1.3rem/1 "Lato";
+  color: #222222;
+  text-transform: uppercase;
+  padding: 12px 10px 0 10px;
+}
+
+.info-window .status {
+  padding: 10px;
+}
+
+.info-window .status p {
+  font: normal 1.3rem/1 "Open Sans";
+  color: #444444;
+}
+
+.info-window .status time {
+  display: block;
+  font: normal 0.9rem/1 "Open Sans";
+  color: #555555;
+  text-transform: uppercase;
+  margin-top: 3px;
+}
+
+.info-window .previous-statuses.hidden {
+  display: none;
+}
+
+.info-window .previous-statuses .status {
+  background-color: #eeeeee;
+  border-bottom: 1px solid #dddddd;
+}
+
+.info-window .previous-statuses .status:last-of-type {
+  border-bottom: none;
+}
+
+.info-window [data-behavior="toggle-previous-statuses"] {
+  width: 100%;
+  font: normal 1.1rem "Open Sans";
+  color: #ffffff;
+  text-transform: uppercase;
+  padding: 2px 0;
+  margin: 0;
+  border: none;
+  outline: none;
+  background-color: #A0A9AE;
+  cursor: pointer;
+}
+
+.info-window [data-behavior="toggle-previous-statuses"]:hover, .info-window [data-behavior="toggle-previous-statuses"]:focus {
+  background-color: #AFB6BB;
+}
+
+.info-window [data-behavior="toggle-previous-statuses"]:active {
+  background-color: #8C979E;
 }

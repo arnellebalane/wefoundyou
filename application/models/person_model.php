@@ -43,6 +43,13 @@
       return $results->result_array();
     }
 
+    public function search($query) {
+      $words = explode(' ', $query);
+      $query = 'SELECT * FROM persons WHERE (name LIKE \'%' . implode('%\') OR (name LIKE \'%', $words) . '%\')';
+      $results = $this->db->query($query);
+      return $results->result_array();
+    }
+
   }
 
 ?>
