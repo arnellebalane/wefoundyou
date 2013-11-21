@@ -64,13 +64,17 @@
     }
 
     private function _report_people($message, $meta) {
+      $location_index = strrpos($message, '(');
+      $location = substr($message, $location_index + 1, -1);
+      $message = substr($message, 0, $location_index);
       $people = explode(',', $message);
       foreach ($people as $person) {
         $person = explode('(', $person);
         $data['person']['name'] = trim($person[0]);
         $data['status'] = array(
-          'status' => isset($person[1]) ? trim(substr($person[1], 0, -1)) : 'unknown',
-          'reporter' => $meta['source']
+          'status' => isset($person[1]) ? substr(trim($person[1]), 0, -1) : 'unknown',
+          'reporter' => $meta['source'],
+          'location' => $location
         );
         $this->person->create_if_nonexistent($data);
       }

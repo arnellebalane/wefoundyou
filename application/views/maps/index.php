@@ -7,6 +7,7 @@
   <link rel="stylesheet" href="<?= base_url() . 'assets/stylesheets/application.css' ?>" />
   <link rel="stylesheet" href="<?= base_url() . 'assets/stylesheets/maps.css' ?>" />
   <script src="https://maps.googleapis.com/maps/api/js?v=3.exp&sensor=false"></script>
+  <script src="http://google-maps-utility-library-v3.googlecode.com/svn/trunk/infobox/src/infobox.js"></script>
   <script src="<?= base_url() . 'assets/javascripts/jquery-2.js' ?>"></script>
   <script src="<?= base_url() . 'assets/javascripts/application.js' ?>"></script>
   <title>Disaster Person Tracker</title>
@@ -20,25 +21,19 @@
     <input type="submit" />
   <?= form_close(); ?>
 
-  <!--
-  <div class="info-window">
-    <h3>Arnelle Balane</h3>
-    <div class="status">
-      <p>Alive but needs immediate medical care</p>
-      <time>November 19, 2013</time>
-    </div>
-    <div class="previous-statuses hidden">
+  <div class="infobox hidden">
+    <div class="info-window">
+      <h3>Arnelle Balane</h3>
       <div class="status">
-        <p>Barely living</p>
-        <time>November 18, 2013</time>
+        <p>Alive but needs immediate medical care</p>
+        <time>November 19, 2013</time>
       </div>
-      <div class="status">
-        <p>Barely living</p>
-        <time>November 17, 2013</time>
-      </div>
+      <div class="previous-statuses hidden"></div>
+      <button data-behavior="toggle-previous-statuses">Show Previous Statuses</button>
     </div>
-    <button data-behavior="toggle-previous-statuses">Show Previous Statuses</button>
+    <div class="info-window-plain">
+      <p>Lorem Ipsum</p>
+    </div>
   </div>
-  -->
 </body>
 </html>
