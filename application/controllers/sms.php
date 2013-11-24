@@ -18,10 +18,16 @@
           'EMPTY_RESULTS' => 'No reports found regarding the person that you are looking for. You will be notified once information about that person gets reported.'
         )
       );
+      $this->REQUEST_METHODS = array(
+        'receive' => 'POST'
+      );
+
+      $this->_extract_route();
+      $this->_check_request_method();
     }
 
     public function receive() {
-      $sms = $this->_parse_sms(base_url() . 'assets/sms.xml');
+      $sms = $this->_parse_sms('php://input');
       $this->sms->create($sms);
 
       $message = $this->_parse_message($sms['content']);
@@ -35,7 +41,7 @@
     }
 
     private function _parse_sms($source) {
-      $sms = simplexml_load_file(base_url() . 'assets/sms.xml');
+      $sms = simplexml_load_file($source);
       $nodes = $sms->xpath('/message/param');
       $sms = array();
       foreach ($nodes as $node) {
@@ -98,6 +104,21 @@
         $this->sms->send($meta['source'], trim($response));
       } else {
         $this->sms->send($meta['source'], $this->RESPONSES['FIND']['EMPTY_RESULTS']);
+      }
+    }
+
+    private function _extract_route() {
+      $controller = $this->uri->segment(1);
+      $action = $this->uri->segment(2);
+      $this->route['controller'] = ($controller) ? $controller : 'sms';
+      $this->route['action'] = ($action) ? $action : 'receive';
+      $this->load->vars($this->route);
+    }
+
+    private function _check_request_method() {
+      if (!array_key_exists($this->route['action'], $this->REQUEST_METHODS) || $_SERVER['REQUEST_METHOD'] != $this->REQUEST_METHODS[$this->route['action']]) {
+        show_404();
+        exit();
       }
     }
 
