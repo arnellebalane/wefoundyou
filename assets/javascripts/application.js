@@ -49,7 +49,7 @@ var maps = {
         bounds.extend(location);
         maps.enableMarker(marker, data[i]);
       } else {
-        (function(data) {
+        (function(data, bounds) {
           maps.geocoder.geocode({address: data.location}, function(results, status) {
             var location = new google.maps.LatLng(results[0].geometry.location.lat(), results[0].geometry.location.lng());
             var marker = new google.maps.Marker({
@@ -59,8 +59,9 @@ var maps = {
             maps.markers.push(marker);
             bounds.extend(location);
             maps.enableMarker(marker, data[i]);
+            maps.map.fitBounds(bounds);
           });
-        })(data[i]);
+        })(data[i], bounds);
       }
     }
     maps.map.fitBounds(bounds);
