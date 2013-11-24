@@ -71,11 +71,9 @@ var maps = {
       google.maps.event.addListener(marker, "click", function(e) {
         var content = data.content;
         if (typeof data.content == "string") {
-          maps.fillInfoWindowPlain(data.content);
-          content = $(".info-window-plain").clone()[0];
+          content = maps.fillInfoWindowPlain(data.content);
         } else if (typeof data.content == "object") {
-          maps.fillInfoWindow(data.content);
-          content = $(".info-window").clone()[0];
+          content = maps.fillInfoWindow(data.content);
         }
         var infoBox = new InfoBox({
           content: content,
@@ -98,25 +96,29 @@ var maps = {
     })(marker, data);
   },
   fillInfoWindow: function(data) {
-    maps.infoWindow.find("h3").text(data.name);
-    maps.infoWindow.find("> .status p").text(data.latestStatus.status);
-    maps.infoWindow.find("> .status time").text(displayDate(data.latestStatus.created_at));
-    maps.infoWindow.find(".previous-statuses").html("");
+    var content = maps.infoWindow.clone();
+    content.find("h3").text(data.name);
+    content.find("> .status p").text(data.latestStatus.status);
+    content.find("> .status time").text(displayDate(data.latestStatus.created_at));
+    content.find(".previous-statuses").html("");
     for (var i = 0; i < data.previousStatuses.length; i++) {
       var status = $("<div class='status'>"
                         + "<p>" + data.previousStatuses[i].status + "</p>"
                         + "<time>" + displayDate(data.previousStatuses[i].created_at) + "</time>"
                       + "</div>");
-      maps.infoWindow.find(".previous-statuses").append(status);
+      content.find(".previous-statuses").append(status);
     }
     if (data.previousStatuses.length > 0) {
-      maps.infoWindow.find("[data-behavior~=toggle-previous-statuses]").show();
+      content.find("[data-behavior~=toggle-previous-statuses]").show();
     } else {
-      maps.infoWindow.find("[data-behavior~=toggle-previous-statuses]").hide();
+      content.find("[data-behavior~=toggle-previous-statuses]").hide();
     }
+    return content[0];
   },
   fillInfoWindowPlain: function(data) {
-    maps.infoWindowPlain.find("p").html(data);
+    var content = $(maps.infoWindowPlain.clone()[0]);
+    content.find("p").html(data);
+    return content[0];
   },
   getInfoBoxDimensions: function(content) {
     var dummy = $("<div></div>").html(content);
