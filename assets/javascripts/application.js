@@ -58,7 +58,7 @@ var maps = {
             });
             maps.markers.push(marker);
             bounds.extend(location);
-            maps.enableMarker(marker, data[i]);
+            maps.enableMarker(marker, data);
             maps.map.fitBounds(bounds);
           });
         })(data[i], bounds);
