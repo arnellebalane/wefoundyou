@@ -19,7 +19,7 @@
       $this->load->view('maps/index');
     }
 
-    public function search($query) {
+    public function search($query = '') {
       $people = $this->person->search(urldecode($query));
       for ($i = 0; $i < count($people); $i++) {
         $people[$i]['statuses'] = $this->person->retrieve_statuses($people[$i]['id']);

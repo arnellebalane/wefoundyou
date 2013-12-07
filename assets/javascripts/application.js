@@ -1,6 +1,6 @@
 $(document).ready(function() {
-  maps.initialize();
   search.initialize();
+  maps.initialize();
   infoWindows.initialize();
 });
 
@@ -10,6 +10,7 @@ var maps = {
   markers: [],
   infoWindow: null,
   infoWindowPlain: null,
+  bounds: null,
   initialize: function() {
     maps.infoWindow = $(".info-window");
     maps.infoWindowPlain = $(".info-window-plain");
@@ -26,45 +27,44 @@ var maps = {
       maps.map.setCenter(currentLocation);
       maps.map.setZoom(5);
     });
-    var data = {
-      latitude: currentLocation.lat(),
-      longitude: currentLocation.lng(),
-      content: "You are here"
-    };
-    maps.plot(data);
+    search.performSearch('');
   },
   plot: function(data) {
     if (!data.length) {
       data = [data];
     }
-    var bounds = new google.maps.LatLngBounds();
+    maps.bounds = new google.maps.LatLngBounds();
     for (var i = 0; i < data.length; i++) {
       if (data[i].latitude && data[i].longitude) {
         var location = new google.maps.LatLng(data[i].latitude, data[i].longitude);
         var marker = new google.maps.Marker({
           position: location,
-          map: maps.map
+          map: maps.map,
+          title: data[i].content.name
         });
         maps.markers.push(marker);
-        bounds.extend(location);
+        maps.bounds.extend(location);
         maps.enableMarker(marker, data[i]);
       } else {
-        (function(data, bounds) {
+        (function(data) {
           maps.geocoder.geocode({address: data.location}, function(results, status) {
             var location = new google.maps.LatLng(results[0].geometry.location.lat(), results[0].geometry.location.lng());
             var marker = new google.maps.Marker({
               position: location,
-              map: maps.map
+              map: maps.map,
+              title: data.content.name
             });
             maps.markers.push(marker);
-            bounds.extend(location);
+            maps.bounds.extend(location);
             maps.enableMarker(marker, data);
-            maps.map.fitBounds(bounds);
+            maps.map.fitBounds(maps.bounds);
+            maps.map.setZoom(5);
           });
-        })(data[i], bounds);
+        })(data[i]);
       }
     }
-    maps.map.fitBounds(bounds);
+    maps.map.fitBounds(maps.bounds);
+    maps.map.setZoom(5);
   },
   enableMarker: function(marker, data) {
     (function(marker, data) {
@@ -142,7 +142,12 @@ var search = {
     search.box = $("#search");
     search.form = $("#search-box");
     search.box.keyup(search.maximizeBox).change(search.maximizeBox);
-    search.form.submit(search.performSearch);
+    search.form.submit(function(e) {
+      e.preventDefault();
+      if (search.box.val().trim().length > 0) {
+        search.performSearch(search.box.val().trim());
+      }
+    });
   },
   maximizeBox: function() {
     if (search.box.val().length > 0) {
@@ -151,25 +156,22 @@ var search = {
       search.box.removeClass("maximized");
     }
   },
-  performSearch: function(e) {
-    e.preventDefault();
-    if (search.box.val().trim().length > 0) {
-      var url = search.form.attr("action");
-      var query = search.box.val().trim();
-      $.ajax({
-        url: url + "/" + query,
-        type: "GET",
-        success: function(data) {
-          data = JSON.parse(data);
-          if (data.length > 0) {
-            maps.clearMarkers();
-            maps.plot(search.format(data));
-          } else {
-            alert("No Results Found");
-          }
+  performSearch: function(query) {
+    var url = search.form.attr("action");
+    $.ajax({
+      url: url + "/" + query,
+      type: "GET",
+      success: function(data) {
+        console.log(data);
+        data = JSON.parse(data);
+        if (data.length > 0) {
+          maps.clearMarkers();
+          maps.plot(search.format(data));
+        } else {
+          alert("No Results Found");
         }
-      });
-    }
+      }
+    });
   },
   format: function(data) {
     var formatted = [];
