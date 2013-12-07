@@ -58,7 +58,7 @@
     private function _parse_message($message) {
       $exploded = explode(' ', $message);
       $message = array();
-      if (in_array(trim($exploded[0]), $this->KEYWORDS)) {
+      if (in_array(strtoupper(trim($exploded[0])), $this->KEYWORDS)) {
         $message['keyword'] = trim($exploded[0]);
         unset($exploded[0]);
         $message['content'] = trim(implode(' ', $exploded));
